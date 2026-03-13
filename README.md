@@ -146,18 +146,18 @@ JavaFX components used include:
 ```
 BattleshipFX
 │
-├── BattleshipFX.java
-│
-├── GameModel
-│   ├── Board logic
-│   ├── Ship placement
-│   └── Fire mechanics
-│
-└── GameUI
-    ├── Board rendering
-    ├── Sidebar (stats, hints, log)
-    ├── Animations & effects
-    └── Event handling
+└── BattleshipFX.java
+    │
+    ├── GameModel
+    │   ├── Board logic
+    │   ├── Ship placement
+    │   └── Fire mechanics
+    │
+    └── GameUI
+        ├── Board rendering
+        ├── Sidebar (stats, hints, log)
+        ├── Animations & effects
+        └── Event handling
 ```
 
 ---
