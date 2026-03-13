@@ -167,7 +167,7 @@ BattleshipFX
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-username/battleshipfx.git](https://github.com/1002manthan/BattleshipFX.git
+https://github.com/1002manthan/BattleshipFX.git
 ```
 
 ### 2. Open in your IDE
