@@ -167,7 +167,7 @@ BattleshipFX
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-username/battleshipfx.git
+git clone https://github.com/your-username/battleshipfx.git](https://github.com/1002manthan/BattleshipFX.git
 ```
 
 ### 2. Open in your IDE
@@ -178,15 +178,7 @@ Recommended IDEs:
 * VS Code
 * Eclipse
 
-### 3. Configure JavaFX
-
-Add JavaFX SDK to VM options:
-
-```
---module-path /path/to/javafx/lib --add-modules javafx.controls,javafx.fxml
-```
-
-### 4. Run the application
+### 3. Run the application
 
 Run the main class:
 
