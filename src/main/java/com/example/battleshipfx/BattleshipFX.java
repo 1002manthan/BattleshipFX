@@ -22,12 +22,14 @@ public class BattleshipFX extends Application {
     public void start(Stage stage) {
         GameModel model = new GameModel();
         GameUI ui = new GameUI(model, stage);
-        // Wider window — board + sidebar fit comfortably with no cutoff
+        //UI Window size
         Scene scene = new Scene(ui.buildRoot(), 1200, 900);
         scene.getStylesheets().add("data:text/css," + CSS);
         stage.setTitle("Battleship — JavaFX Edition");
         stage.setScene(scene);
-        stage.setResizable(false);
+        stage.setResizable(true);
+        stage.setMinWidth(1000);
+        stage.setMinHeight(1000);
         stage.show();
     }
 
