@@ -12,20 +12,22 @@ import javafx.scene.shape.*;
 import javafx.scene.text.*;
 import javafx.stage.*;
 import javafx.util.Duration;
+
 import java.util.*;
 
 public class BattleshipFX extends Application {
 
-    public static void main(String[] args) { launch(args); }
+    public static void main(String[] args) {
+        launch(args);
+    }
 
     @Override
     public void start(Stage stage) {
         GameModel model = new GameModel();
         GameUI ui = new GameUI(model, stage);
-        //UI Window size
         Scene scene = new Scene(ui.buildRoot(), 1200, 900);
         scene.getStylesheets().add("data:text/css," + CSS);
-        stage.setTitle("Battleship — JavaFX Edition");
+        stage.setTitle("The Battleship War");
         stage.setScene(scene);
         stage.setResizable(true);
         stage.setMinWidth(1000);
@@ -33,22 +35,68 @@ public class BattleshipFX extends Application {
         stage.show();
     }
 
+    // ═══════════════════════════════════════════════════════
+    //  "THE BATTLESHIP WAR"
+    //  Theme: aged parchment canvas (#d4b896) + deep sea
+    //  teal cells (#1b4f6a) — exactly as the screenshot.
+    //  Labels in dark brown, serif font throughout.
+    // ═══════════════════════════════════════════════════════
+    static final String PARCHMENT      = "#d6bc96";
+    static final String PARCHMENT_DARK = "#c4a878";
+    static final String PARCHMENT_MID  = "#cbb08a";
+    static final String BROWN_DARK     = "#3a2408";
+    static final String BROWN_MID      = "#6a4018";
+    static final String GOLD           = "#8a5c10";
+    static final String GOLD_BRIGHT    = "#b07820";
+    static final String CRIMSON        = "#8a1c0c";
+
     static final String CSS =
-            ".root{-fx-background-color:#0a1428;-fx-font-family:'Segoe UI',Arial,sans-serif;}" +
-                    ".header-title{-fx-font-size:28px;-fx-font-weight:bold;-fx-fill:#00c8e0;}" +
-                    ".header-sub{-fx-font-size:12px;-fx-fill:#88bbd8;}" +
-                    ".section-label{-fx-font-size:11px;-fx-font-weight:bold;-fx-text-fill:#6ab0d4;-fx-padding:0 0 2 0;}" +
-                    ".stat-title{-fx-font-size:11px;-fx-text-fill:#7aaccc;}" +
-                    ".stat-value{-fx-font-size:20px;-fx-font-weight:bold;-fx-text-fill:#ffc832;}" +
-                    ".status-bar{-fx-background-color:#0d1e3c;-fx-border-color:#005090;-fx-border-width:1 0 0 0;}" +
-                    ".status-label{-fx-font-size:13px;-fx-font-weight:bold;-fx-text-fill:#b8daf0;}" +
-                    ".new-game-btn{-fx-background-color:#0090b0;-fx-text-fill:white;" +
-                    "  -fx-font-weight:bold;-fx-font-size:13px;-fx-background-radius:8;-fx-cursor:hand;}" +
-                    ".new-game-btn:hover{-fx-background-color:#00b8d8;}" +
-                    ".card{-fx-background-color:#0d1e3c;-fx-background-radius:10;" +
-                    "  -fx-border-color:#004880;-fx-border-radius:10;-fx-border-width:1;-fx-padding:10 14 10 14;}" +
-                    ".how-title{-fx-font-size:11px;-fx-font-weight:bold;-fx-text-fill:#00c8e0;}" +
-                    ".how-text{-fx-font-size:11px;-fx-text-fill:#a8cce0;}";
+            // Whole window is parchment
+            ".root{-fx-background-color:" + PARCHMENT + ";" +
+                    "  -fx-font-family:'Georgia','Book Antiqua','Times New Roman',serif;}" +
+
+                    // Title — deep brown, large serif
+                    ".header-title{-fx-font-size:28px;-fx-font-weight:bold;-fx-fill:" + BROWN_DARK + ";}" +
+
+                    // Subtitle
+                    ".header-sub{-fx-font-size:11px;-fx-fill:" + BROWN_MID + ";}" +
+
+                    // Sidebar section labels
+                    ".section-label{-fx-font-size:10px;-fx-font-weight:bold;" +
+                    "  -fx-text-fill:" + GOLD + ";-fx-padding:0 0 2 0;" +
+                    "  -fx-font-family:'Georgia',serif;" +
+                    "  -fx-border-color:" + PARCHMENT_DARK + ";-fx-border-width:0 0 1 0;}" +
+
+                    // Stat labels
+                    ".stat-title{-fx-font-size:11px;-fx-text-fill:" + BROWN_MID + ";" +
+                    "  -fx-font-family:'Georgia',serif;}" +
+                    ".stat-value{-fx-font-size:20px;-fx-font-weight:bold;-fx-text-fill:" + BROWN_DARK + ";" +
+                    "  -fx-font-family:'Georgia',serif;}" +
+
+                    // Status bar — slightly darker parchment strip
+                    ".status-bar{-fx-background-color:" + PARCHMENT_DARK + ";" +
+                    "  -fx-border-color:" + BROWN_MID + ";-fx-border-width:2 0 0 0;}" +
+                    ".status-label{-fx-font-size:13px;-fx-font-weight:bold;" +
+                    "  -fx-text-fill:" + BROWN_DARK + ";-fx-font-family:'Georgia',serif;}" +
+
+                    // New Campaign button — deep teal wax seal style
+                    ".new-game-btn{-fx-background-color:#1b4f6a;-fx-text-fill:" + PARCHMENT + ";" +
+                    "  -fx-font-weight:bold;-fx-font-size:12px;-fx-background-radius:4;" +
+                    "  -fx-cursor:hand;-fx-font-family:'Georgia',serif;" +
+                    "  -fx-border-color:#2d7aaa;-fx-border-radius:4;-fx-border-width:1.5;}" +
+                    ".new-game-btn:hover{-fx-background-color:#246080;-fx-border-color:#40a0cc;}" +
+
+                    // Sidebar cards — slightly darker parchment
+                    ".card{-fx-background-color:" + PARCHMENT_MID + ";" +
+                    "  -fx-background-radius:4;" +
+                    "  -fx-border-color:" + PARCHMENT_DARK + ";-fx-border-radius:4;" +
+                    "  -fx-border-width:1.5;-fx-padding:10 14 10 14;}" +
+
+                    // How-to-play text
+                    ".how-title{-fx-font-size:10px;-fx-font-weight:bold;" +
+                    "  -fx-text-fill:" + GOLD + ";-fx-font-family:'Georgia',serif;}" +
+                    ".how-text{-fx-font-size:11px;-fx-text-fill:" + BROWN_DARK + ";" +
+                    "  -fx-font-family:'Georgia',serif;}";
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -56,19 +104,25 @@ public class BattleshipFX extends Application {
 // ═══════════════════════════════════════════════════════════
 class GameModel {
     static final int SIZE = 10;
-    enum CellState { EMPTY, SHIP, HIT, MISS, SUNK }
+
+    enum CellState {EMPTY, SHIP, HIT, MISS, SUNK}
 
     static class Ship {
         String name;
         int size, hits;
         List<int[]> cells = new ArrayList<>();
-        Ship(String name, int size) { this.name = name; this.size = size; }
+
+        Ship(String name, int size) {
+            this.name = name;
+            this.size = size;
+        }
+
         boolean isSunk() { return hits >= size; }
     }
 
     CellState[][] board = new CellState[SIZE][SIZE];
-    Ship[][]      shipAt = new Ship[SIZE][SIZE];
-    List<Ship>    ships  = new ArrayList<>();
+    Ship[][] shipAt     = new Ship[SIZE][SIZE];
+    List<Ship> ships    = new ArrayList<>();
     int attempts, hitCount, totalShipCells;
     boolean gameOver;
 
@@ -86,8 +140,8 @@ class GameModel {
 
     void placeFleet() {
         String[][] fleet = {
-                {"Carrier","5"},{"Battleship","4"},
-                {"Cruiser","3"},{"Submarine","3"},{"Destroyer","2"}
+                {"Flagship",   "5"}, {"Man-of-War", "4"},
+                {"Brigantine", "3"}, {"Corsair",    "3"}, {"Sloop", "2"}
         };
         Random rng = new Random();
         for (String[] f : fleet) {
@@ -105,7 +159,8 @@ class GameModel {
                         ship.cells.add(new int[]{rr, cc});
                         totalShipCells++;
                     }
-                    ships.add(ship); placed = true;
+                    ships.add(ship);
+                    placed = true;
                 }
             }
         }
@@ -116,8 +171,8 @@ class GameModel {
             int rr = h ? r : r + i, cc = h ? c + i : c;
             for (int dr = -1; dr <= 1; dr++)
                 for (int dc = -1; dc <= 1; dc++) {
-                    int nr = rr+dr, nc = cc+dc;
-                    if (nr>=0 && nr<SIZE && nc>=0 && nc<SIZE
+                    int nr = rr + dr, nc = cc + dc;
+                    if (nr >= 0 && nr < SIZE && nc >= 0 && nc < SIZE
                             && board[nr][nc] == CellState.SHIP) return false;
                 }
         }
@@ -126,11 +181,12 @@ class GameModel {
 
     String fire(int r, int c) {
         CellState st = board[r][c];
-        if (st==CellState.HIT || st==CellState.MISS || st==CellState.SUNK) return "ALREADY";
+        if (st == CellState.HIT || st == CellState.MISS || st == CellState.SUNK) return "ALREADY";
         attempts++;
         if (st == CellState.SHIP) {
             Ship ship = shipAt[r][c];
-            ship.hits++; hitCount++;
+            ship.hits++;
+            hitCount++;
             if (ship.isSunk()) {
                 for (int[] cell : ship.cells) board[cell[0]][cell[1]] = CellState.SUNK;
                 if (hitCount >= totalShipCells) gameOver = true;
@@ -143,20 +199,60 @@ class GameModel {
         return "MISS";
     }
 
-    int rowHint(int r) { int n=0; for(int c=0;c<SIZE;c++) if(board[r][c]==CellState.SHIP) n++; return n; }
-    int colHint(int c) { int n=0; for(int r=0;r<SIZE;r++) if(board[r][c]==CellState.SHIP) n++; return n; }
-    int shipsRemaining() { int n=0; for(Ship s:ships) if(!s.isSunk()) n++; return n; }
-    double accuracy() { return attempts==0 ? 0 : hitCount*100.0/attempts; }
+    int rowHint(int r) {
+        int n = 0;
+        for (int c = 0; c < SIZE; c++) if (board[r][c] == CellState.SHIP) n++;
+        return n;
+    }
+
+    int colHint(int c) {
+        int n = 0;
+        for (int r = 0; r < SIZE; r++) if (board[r][c] == CellState.SHIP) n++;
+        return n;
+    }
+
+    int shipsRemaining() {
+        int n = 0;
+        for (Ship s : ships) if (!s.isSunk()) n++;
+        return n;
+    }
+
+    double accuracy() {
+        return attempts == 0 ? 0 : hitCount * 100.0 / attempts;
+    }
 }
 
 // ═══════════════════════════════════════════════════════════
-//  GAME UI
+//  GAME UI  —  The Battleship War — Parchment Edition
 // ═══════════════════════════════════════════════════════════
 class GameUI {
 
-    // Sidebar is now 320px wide — plenty of room for all text
-    static final int SIDEBAR_W = 320;
-    static final double TEXT_W = SIDEBAR_W - 35;
+    static final int    SIDEBAR_W = 350;
+    static final double TEXT_W    = SIDEBAR_W;
+
+    // shorthand palette refs
+    static final String PARCHMENT      = "#d6bc96";
+    static final String PARCHMENT_DARK = "#c4a878";
+    static final String PARCHMENT_MID  = "#cbb08a";
+    static final String BROWN_DARK     = "#3a2408";
+    static final String BROWN_MID      = "#6a4018";
+    static final String GOLD           = "#8a5c10";
+    static final String GOLD_BRIGHT    = "#b07820";
+    static final String CRIMSON        = "#8a1c0c";
+
+    // ── Cell colours — matching screenshot exactly ───────────
+    // Normal sea tile — deep teal as in the screenshot
+    static final String C_WATER   = "#1b4f6a";
+    // Hover — slightly brighter teal
+    static final String C_WATER_H = "#256690";
+    // Hit — warm crimson / blood-red
+    static final String C_HIT     = "#9e2010";
+    // Sunk — very dark burgundy
+    static final String C_SUNK    = "#5c0e0e";
+    // Miss — muted slate-teal (darker than empty)
+    static final String C_MISS    = "#163c50";
+    // Grid gap colour = parchment (comes from background showing through)
+    static final String C_HEADER  = "#3a2408";   // dark brown labels
 
     GameModel model;
     Stage stage;
@@ -166,14 +262,10 @@ class GameUI {
     Label attemptsVal, hitsVal, shipsVal, accuracyVal;
     TextArea logArea;
 
-    static final String C_WATER   = "#0d3d6e";
-    static final String C_WATER_H = "#1560a8";
-    static final String C_HIT     = "#c83010";
-    static final String C_SUNK    = "#7a1010";
-    static final String C_MISS    = "#1e4d7a";
-    static final String C_GRID    = "#003060";
-
-    GameUI(GameModel model, Stage stage) { this.model = model; this.stage = stage; }
+    GameUI(GameModel model, Stage stage) {
+        this.model = model;
+        this.stage = stage;
+    }
 
     BorderPane buildRoot() {
         BorderPane root = new BorderPane();
@@ -184,15 +276,25 @@ class GameUI {
         return root;
     }
 
-    // ── Header ──────────────────────────────────────────────
+    // ── Header ───────────────────────────────────────────────
     HBox buildHeader() {
-        Text title = new Text("BATTLESHIP");
-        title.getStyleClass().add("header-title");
-        Text sub = new Text("   |   Click a tile to fire — sink the entire fleet to win!");
-        sub.getStyleClass().add("header-sub");
-        TextFlow tf = new TextFlow(title, sub);
+        Text leftOrn = new Text("⚓  ");
+        leftOrn.setFont(Font.font("Georgia", FontWeight.BOLD, 20));
+        leftOrn.setFill(Color.web(BROWN_MID));
 
-        Button btn = new Button("New Game");
+        Text title = new Text("THE  BATTLESHIP  WAR");
+        title.getStyleClass().add("header-title");
+
+        Text rightOrn = new Text("  ⚓");
+        rightOrn.setFont(Font.font("Georgia", FontWeight.BOLD, 20));
+        rightOrn.setFill(Color.web(BROWN_MID));
+
+        Text sub = new Text("    —    Select a coordinate to open fire upon the enemy fleet");
+        sub.getStyleClass().add("header-sub");
+
+        TextFlow tf = new TextFlow(leftOrn, title, rightOrn, sub);
+
+        Button btn = new Button("⚔  New Campaign");
         btn.getStyleClass().add("new-game-btn");
         btn.setPadding(new Insets(9, 20, 9, 20));
         btn.setOnAction(e -> newGame());
@@ -202,31 +304,45 @@ class GameUI {
 
         HBox bar = new HBox(16, tf, spacer, btn);
         bar.setAlignment(Pos.CENTER_LEFT);
-        bar.setPadding(new Insets(14, 18, 10, 18));
-        bar.setStyle("-fx-background-color:#061228;-fx-border-color:#003860;-fx-border-width:0 0 1 0;");
+        bar.setPadding(new Insets(14, 18, 12, 18));
+        // Header bar — medium parchment with bottom rule
+        bar.setStyle(
+                "-fx-background-color:" + PARCHMENT_DARK + ";" +
+                        "-fx-border-color:" + BROWN_MID + ";-fx-border-width:0 0 2 0;"
+        );
         return bar;
     }
 
     // ── Board ────────────────────────────────────────────────
     VBox buildBoard() {
         GridPane grid = new GridPane();
-        grid.setHgap(3); grid.setVgap(3);
+        // Gap IS the parchment background showing through — matches screenshot
+        grid.setHgap(4);
+        grid.setVgap(4);
         grid.setAlignment(Pos.CENTER);
+        // Grid background = parchment so gaps look like the dividers in the screenshot
+        grid.setStyle("-fx-background-color:" + PARCHMENT + ";");
+        grid.setPadding(new Insets(0));
 
+        // Column headers A–J  — bold dark-brown serif
         for (int c = 0; c < GameModel.SIZE; c++) {
-            Label lbl = new Label(String.valueOf((char)('A' + c)));
-            lbl.setFont(Font.font("SansSerif", FontWeight.BOLD, 12));
-            lbl.setTextFill(Color.web("#60b0d8"));
-            lbl.setMinWidth(52); lbl.setAlignment(Pos.CENTER);
+            Label lbl = new Label(String.valueOf((char) ('A' + c)));
+            lbl.setFont(Font.font("Georgia", FontWeight.BOLD, 14));
+            lbl.setTextFill(Color.web(C_HEADER));
+            lbl.setMinWidth(54);
+            lbl.setAlignment(Pos.CENTER);
             grid.add(lbl, c + 1, 0);
         }
+        // Row headers 1–10
         for (int r = 0; r < GameModel.SIZE; r++) {
             Label lbl = new Label(String.valueOf(r + 1));
-            lbl.setFont(Font.font("SansSerif", FontWeight.BOLD, 12));
-            lbl.setTextFill(Color.web("#60b0d8"));
-            lbl.setMinWidth(24); lbl.setAlignment(Pos.CENTER_RIGHT);
+            lbl.setFont(Font.font("Georgia", FontWeight.BOLD, 14));
+            lbl.setTextFill(Color.web(C_HEADER));
+            lbl.setMinWidth(28);
+            lbl.setAlignment(Pos.CENTER_RIGHT);
             grid.add(lbl, 0, r + 1);
         }
+        // Cells
         for (int r = 0; r < GameModel.SIZE; r++)
             for (int c = 0; c < GameModel.SIZE; c++) {
                 StackPane cell = buildCell(r, c);
@@ -234,35 +350,41 @@ class GameUI {
                 grid.add(cell, c + 1, r + 1);
             }
 
+        // Outer wrapper — parchment padding so the border looks like screenshot
         VBox wrap = new VBox(grid);
         wrap.setAlignment(Pos.CENTER);
-        wrap.setPadding(new Insets(14));
-        wrap.setStyle("-fx-background-color:#08142a;-fx-background-radius:14;" +
-                "-fx-border-color:#003870;-fx-border-radius:14;-fx-border-width:1.5;");
+        wrap.setPadding(new Insets(14, 16, 16, 10));
+        wrap.setStyle("-fx-background-color:" + PARCHMENT + ";");
+
         VBox outer = new VBox(wrap);
         outer.setAlignment(Pos.CENTER);
         outer.setPadding(new Insets(10, 0, 10, 10));
+        outer.setStyle("-fx-background-color:" + PARCHMENT + ";");
         return outer;
     }
 
     StackPane buildCell(int r, int c) {
-        Rectangle bg = new Rectangle(52, 52);
-        bg.setArcWidth(9); bg.setArcHeight(9);
+        Rectangle bg = new Rectangle(54, 54);
+        bg.setArcWidth(4);
+        bg.setArcHeight(4);
         bg.setFill(Paint.valueOf(C_WATER));
-        bg.setStroke(Color.web(C_GRID)); bg.setStrokeWidth(1);
+        // No stroke — parchment gap between cells IS the border (like screenshot)
+        bg.setStroke(Color.TRANSPARENT);
+        bg.setStrokeWidth(0);
 
         Label icon = new Label();
-        icon.setFont(Font.font("SansSerif", FontWeight.BOLD, 13));
+        icon.setFont(Font.font("Georgia", FontWeight.BOLD, 14));
         icon.setMouseTransparent(true);
 
         StackPane cell = new StackPane(bg, icon);
-        cell.setMinSize(52, 52); cell.setMaxSize(52, 52);
+        cell.setMinSize(54, 54);
+        cell.setMaxSize(54, 54);
         cell.setCursor(javafx.scene.Cursor.HAND);
 
         cell.setOnMouseEntered(e -> {
             if (model.board[r][c] == GameModel.CellState.EMPTY && !model.gameOver) {
                 bg.setFill(Paint.valueOf(C_WATER_H));
-                addGlow(cell, Color.web("#00d4ff"), 12);
+                addGlow(cell, Color.web("#60b8e0"), 14);
             }
         });
         cell.setOnMouseExited(e -> {
@@ -280,39 +402,38 @@ class GameUI {
         if (model.gameOver) return;
         String result = model.fire(r, c);
         if (result.equals("ALREADY")) {
-            flashStatus("Already fired here — pick another tile!", "#ffcc20");
+            flashStatus("☠  These waters have already been charted — choose another coordinate.", GOLD_BRIGHT);
             return;
         }
         refreshCell(r, c, result);
         updateStats();
 
-        String col = String.valueOf((char)('A' + c));
+        String col = String.valueOf((char) ('A' + c));
         String row = String.valueOf(r + 1);
 
         if (result.equals("HIT")) {
-            setStatus("[HIT]  Direct hit at " + col + row + "! Keep firing!", "#ff7a30");
-            appendLog("[HIT]   " + col + row);
+            setStatus("⚔  Strike confirmed at " + col + row + "!  The vessel bleeds — press the attack!", CRIMSON);
+            appendLog("[STRIKE]  " + col + row);
         } else if (result.startsWith("SUNK:")) {
             String[] parts = result.split(":");
             String name = parts[1]; int sz = Integer.parseInt(parts[2]);
-            setStatus("[SUNK]  " + name + " (size " + sz + ") destroyed at " + col + row + "! Outstanding!", "#ff4040");
-            appendLog("[SUNK]  " + name + " @ " + col + row);
+            setStatus("☠  " + name + " (" + sz + " guns) sent to the depths at " + col + row + "!", "#b02010");
+            appendLog("[SUNK]    " + name + "  ☠  " + col + row);
             shakeSunk(name);
         } else {
             int rh = model.rowHint(r), ch = model.colHint(c);
-            setStatus("[MISS]  " + col + row
-                    + "   |   Row " + row + ": " + rh + " ship cell(s) left"
-                    + "   |   Col " + col + ": " + ch + " ship cell(s) left", "#3090d0");
-            appendLog("[MISS]  " + col + row + "  R:" + rh + " C:" + ch);
+            setStatus("○  The cannonball finds only sea at " + col + row
+                    + "     Row " + row + ": " + rh + " cell(s) remain"
+                    + "   —   Col " + col + ": " + ch + " remain", BROWN_MID);
+            appendLog("[MISS]    " + col + row + "  R:" + rh + "  C:" + ch);
         }
-
         if (model.gameOver) showVictory();
     }
 
     void refreshCell(int r, int c, String result) {
         StackPane cell = cells[r][c];
-        Rectangle bg = (Rectangle) cell.getChildren().get(0);
-        Label icon   = (Label)     cell.getChildren().get(1);
+        Rectangle bg   = (Rectangle) cell.getChildren().get(0);
+        Label icon     = (Label)     cell.getChildren().get(1);
         if (cell.getChildren().size() > 2) cell.getChildren().remove(2);
         cell.setEffect(null);
 
@@ -320,9 +441,10 @@ class GameUI {
 
         if (st == GameModel.CellState.HIT) {
             bg.setFill(Paint.valueOf(C_HIT));
-            icon.setText("HIT");
-            icon.setTextFill(Color.web("#ffdd88"));
-            addGlow(cell, Color.web("#ff6020"), 18);
+            icon.setText("⚔");
+            icon.setFont(Font.font("Georgia", FontWeight.BOLD, 22));
+            icon.setTextFill(Color.web("#f8e8b0"));
+            addGlow(cell, Color.web("#e04010"), 20);
             pulseEffect(cell);
 
         } else if (st == GameModel.CellState.SUNK) {
@@ -331,6 +453,7 @@ class GameUI {
                     for (int[] pos : s.cells) refreshSunkCell(pos[0], pos[1]);
 
         } else {
+            // MISS — slightly darker teal + hint labels
             bg.setFill(Paint.valueOf(C_MISS));
             icon.setText("");
             int rh = model.rowHint(r), ch = model.colHint(c);
@@ -341,13 +464,16 @@ class GameUI {
 
             Label rLabel = new Label("R:" + rh);
             rLabel.setFont(Font.font("Courier New", FontWeight.BOLD, 9));
-            rLabel.setTextFill(Color.web("#80c8f0"));
+            rLabel.setTextFill(Color.web("#a8d0e8"));
 
             Label cLabel = new Label("C:" + ch);
             cLabel.setFont(Font.font("Courier New", FontWeight.BOLD, 9));
-            cLabel.setTextFill(Color.web("#80c8f0"));
+            cLabel.setTextFill(Color.web("#a8d0e8"));
 
-            Circle dot = new Circle(3, Color.web("#4090c8"));
+            Label dot = new Label("◆");
+            dot.setFont(Font.font("Georgia", 8));
+            dot.setTextFill(Color.web("#5898b8"));
+
             hint.getChildren().addAll(rLabel, cLabel, dot);
             cell.getChildren().add(hint);
         }
@@ -355,46 +481,51 @@ class GameUI {
 
     void refreshSunkCell(int r, int c) {
         StackPane cell = cells[r][c];
-        Rectangle bg = (Rectangle) cell.getChildren().get(0);
-        Label icon   = (Label)     cell.getChildren().get(1);
+        Rectangle bg   = (Rectangle) cell.getChildren().get(0);
+        Label icon     = (Label)     cell.getChildren().get(1);
         if (cell.getChildren().size() > 2) cell.getChildren().remove(2);
         bg.setFill(Paint.valueOf(C_SUNK));
-        icon.setText("X");
-        icon.setTextFill(Color.web("#ff8888"));
-        icon.setFont(Font.font("SansSerif", FontWeight.BOLD, 18));
-        addGlow(cell, Color.web("#ff2020"), 14);
+        icon.setText("☠");
+        icon.setFont(Font.font("Georgia", FontWeight.BOLD, 22));
+        icon.setTextFill(Color.web("#f08080"));
+        addGlow(cell, Color.web("#c01010"), 16);
     }
 
     // ── Sidebar ──────────────────────────────────────────────
     VBox buildSidebar() {
         VBox side = new VBox(12);
-        side.setPadding(new Insets(14, 16, 14, 10));
+        side.setPadding(new Insets(14, 16, 14, 12));
         side.setPrefWidth(SIDEBAR_W);
         side.setMinWidth(SIDEBAR_W);
         side.setMaxWidth(SIDEBAR_W);
         side.setFillWidth(true);
+        // Sidebar = slightly darker parchment with left divider
+        side.setStyle(
+                "-fx-background-color:" + PARCHMENT_MID + ";" +
+                        "-fx-border-color:" + PARCHMENT_DARK + ";-fx-border-width:0 0 0 2;"
+        );
 
-        side.getChildren().add(sectionLabel("STATS"));
+        side.getChildren().add(sectionLabel("⚓  BATTLE STATUS"));
         side.getChildren().add(buildStatsCard());
 
-        side.getChildren().add(sectionLabel("HOW TO PLAY"));
+        side.getChildren().add(sectionLabel("⚔  TACTICAL ORDERS"));
         side.getChildren().add(buildHowToPlayCard());
 
-        side.getChildren().add(sectionLabel("LEGEND"));
+        side.getChildren().add(sectionLabel("⚔  FIELD CODEX"));
         side.getChildren().add(buildLegendCard());
 
-        side.getChildren().add(sectionLabel("BATTLE LOG"));
+        side.getChildren().add(sectionLabel("⚔  COMBAT LOG"));
         logArea = new TextArea();
         logArea.setEditable(false);
         logArea.setPrefRowCount(6);
         logArea.setMaxWidth(Double.MAX_VALUE);
         logArea.setWrapText(true);
         logArea.setStyle(
-                "-fx-control-inner-background:#08121e;" +
-                        "-fx-text-fill:#40e080;" +
+                "-fx-control-inner-background:#e8d8b8;" +
+                        "-fx-text-fill:" + BROWN_DARK + ";" +
                         "-fx-font-family:'Courier New';" +
                         "-fx-font-size:11px;" +
-                        "-fx-border-color:#004080;-fx-border-width:1;"
+                        "-fx-border-color:" + PARCHMENT_DARK + ";-fx-border-width:1.5;"
         );
         VBox.setVgrow(logArea, Priority.ALWAYS);
         side.getChildren().add(logArea);
@@ -406,6 +537,7 @@ class GameUI {
         Label l = new Label(text);
         l.getStyleClass().add("section-label");
         l.setMaxWidth(Double.MAX_VALUE);
+        l.setPadding(new Insets(4, 0, 4, 0));
         return l;
     }
 
@@ -427,10 +559,10 @@ class GameUI {
         col1.setPercentWidth(50); col1.setHalignment(HPos.LEFT);
         g.getColumnConstraints().addAll(col0, col1);
 
-        g.add(statBlock("Shots Fired", attemptsVal), 0, 0);
-        g.add(statBlock("Hits",        hitsVal),     1, 0);
-        g.add(statBlock("Ships Left",  shipsVal),    0, 1);
-        g.add(statBlock("Accuracy",    accuracyVal), 1, 1);
+        g.add(statBlock("Cannons Fired", attemptsVal),  0, 0);
+        g.add(statBlock("Strikes",        hitsVal),      1, 0);
+        g.add(statBlock("Vessels Afloat", shipsVal),     0, 1);
+        g.add(statBlock("Accuracy",       accuracyVal),  1, 1);
         return g;
     }
 
@@ -449,25 +581,25 @@ class GameUI {
         return l;
     }
 
-    // ── How To Play Card ─────────────────────────────────────
+    // ── Tactical Orders Card ─────────────────────────────────
     VBox buildHowToPlayCard() {
         VBox box = new VBox(0);
         box.getStyleClass().add("card");
         box.setMaxWidth(Double.MAX_VALUE);
 
         String[][] steps = {
-                {"OBJECTIVE",
-                        "Sink all 5 enemy ships hidden on the 10x10 ocean grid."},
-                {"HOW TO FIRE",
-                        "Click any blue tile on the board to fire a torpedo at that location."},
-                {"HITS & MISSES",
-                        "Red tile (HIT) = you struck a ship! Dark red X = ship fully sunk! Blue tile = miss."},
-                {"HINT SYSTEM",
-                        "After a miss, R:2 means 2 ship cells remain in that Row. C:3 means 3 remain in that Column. Use these clues to find ships faster!"},
+                {"THE MISSION",
+                        "Locate and destroy all 5 enemy vessels hidden on the 10x10 sea grid."},
+                {"OPENING FIRE",
+                        "Click any sea tile on the grid to fire a cannonball at that coordinate."},
+                {"STRIKES & MISSES",
+                        "⚔ Sword = direct strike!  ☠ Skull = vessel fully sunk!  Dark tile = miss."},
+                {"INTELLIGENCE",
+                        "After a miss, R:2 means 2 ship cells remain in that Row. C:3 in that Column. Use these clues to locate vessels faster."},
                 {"THE FLEET",
-                        "Carrier (5 cells), Battleship (4), Cruiser (3), Submarine (3), Destroyer (2). All placed randomly each game."},
-                {"WIN CONDITION",
-                        "Sink all 5 ships to win! Fewer shots = higher accuracy score."}
+                        "Flagship (5), Man-of-War (4), Brigantine (3), Corsair (3), Sloop (2). Positions randomised each campaign."},
+                {"VICTORY",
+                        "Sink all 5 vessels to win The Battleship War! Fewer shots earns greater honour."}
         };
 
         for (int i = 0; i < steps.length; i++) {
@@ -488,44 +620,46 @@ class GameUI {
 
             if (i < steps.length - 1) {
                 Separator sep = new Separator();
-                sep.setStyle("-fx-background-color:#002050;-fx-border-color:#002050;");
+                sep.setStyle("-fx-background-color:" + PARCHMENT_DARK + ";-fx-border-color:" + PARCHMENT_DARK + ";");
                 box.getChildren().add(sep);
             }
         }
-
         return box;
     }
 
-    // ── Legend Card ──────────────────────────────────────────
+    // ── Field Codex Card ─────────────────────────────────────
     VBox buildLegendCard() {
         VBox box = new VBox(7);
         box.getStyleClass().add("card");
         box.setMaxWidth(Double.MAX_VALUE);
         box.getChildren().addAll(
-                legendRow(C_WATER, "Water — untouched tile"),
-                legendRow(C_HIT,   "HIT  — direct hit on ship"),
-                legendRow(C_SUNK,  "X    — ship fully sunk"),
-                legendRow(C_MISS,  "Miss — R/C hints shown")
+                legendRow(C_WATER,   "Uncharted sea — no contact"),
+                legendRow(C_HIT,     "⚔  Strike confirmed on vessel"),
+                legendRow(C_SUNK,    "☠  Vessel sent to the depths"),
+                legendRow(C_MISS,    "○  Miss — R/C intel shown")
         );
         return box;
     }
 
     HBox legendRow(String color, String text) {
-        Rectangle swatch = new Rectangle(13, 13);
+        Rectangle swatch = new Rectangle(14, 14);
         swatch.setArcWidth(4); swatch.setArcHeight(4);
         swatch.setFill(Paint.valueOf(color));
-        swatch.setStroke(Color.web(color).brighter()); swatch.setStrokeWidth(0.8);
+        swatch.setStroke(Color.web(PARCHMENT_DARK));
+        swatch.setStrokeWidth(1);
         Label lbl = new Label(text);
-        lbl.setFont(Font.font("SansSerif", 11));
-        lbl.setTextFill(Color.web("#a0c8e0"));
-        HBox row = new HBox(7, swatch, lbl);
+        lbl.setFont(Font.font("Georgia", 11));
+        lbl.setTextFill(Color.web(BROWN_DARK));
+        HBox row = new HBox(8, swatch, lbl);
         row.setAlignment(Pos.CENTER_LEFT);
         return row;
     }
 
     // ── Status Bar ───────────────────────────────────────────
     HBox buildStatusBar() {
-        statusLabel = new Label("Click any tile to fire your first shot!");
+        statusLabel = new Label(
+                "⚔  Ready for engagement — select a coordinate to begin The Battleship War!"
+        );
         statusLabel.getStyleClass().add("status-label");
         statusLabel.setPadding(new Insets(10, 18, 10, 18));
         HBox bar = new HBox(statusLabel);
@@ -537,29 +671,29 @@ class GameUI {
     // ── Effects ──────────────────────────────────────────────
     void addGlow(Node node, Color color, double radius) {
         DropShadow glow = new DropShadow(radius, color);
-        glow.setSpread(0.3);
+        glow.setSpread(0.35);
         node.setEffect(glow);
     }
 
     void pulseEffect(Node node) {
-        ScaleTransition st = new ScaleTransition(Duration.millis(150), node);
+        ScaleTransition st = new ScaleTransition(Duration.millis(140), node);
         st.setFromX(1.0); st.setFromY(1.0);
-        st.setToX(1.18);  st.setToY(1.18);
+        st.setToX(1.16);  st.setToY(1.16);
         st.setAutoReverse(true); st.setCycleCount(2);
         st.play();
     }
 
     void shakeSunk(String name) {
-        for (GameModel.Ship s : model.ships) {
-            if (s.name.equals(name)) {
+        for (GameModel.Ship s : model.ships)
+            if (s.name.equals(name))
                 for (int[] pos : s.cells) {
-                    StackPane cell = cells[pos[0]][pos[1]];
-                    TranslateTransition tt = new TranslateTransition(Duration.millis(55), cell);
-                    tt.setByX(5); tt.setAutoReverse(true); tt.setCycleCount(6);
+                    TranslateTransition tt =
+                            new TranslateTransition(Duration.millis(55), cells[pos[0]][pos[1]]);
+                    tt.setByX(5);
+                    tt.setAutoReverse(true);
+                    tt.setCycleCount(6);
                     tt.play();
                 }
-            }
-        }
     }
 
     void flashStatus(String msg, String colorHex) {
@@ -589,17 +723,19 @@ class GameUI {
         for (int r = 0; r < GameModel.SIZE; r++) {
             for (int c = 0; c < GameModel.SIZE; c++) {
                 StackPane cell = cells[r][c];
-                Rectangle bg = (Rectangle) cell.getChildren().get(0);
-                Label icon   = (Label)     cell.getChildren().get(1);
+                Rectangle bg   = (Rectangle) cell.getChildren().get(0);
+                Label icon     = (Label)     cell.getChildren().get(1);
                 bg.setFill(Paint.valueOf(C_WATER));
-                icon.setText(""); icon.setFont(Font.font("SansSerif", FontWeight.BOLD, 13));
+                bg.setStroke(Color.TRANSPARENT);
+                icon.setText("");
+                icon.setFont(Font.font("Georgia", FontWeight.BOLD, 14));
                 cell.setEffect(null);
                 if (cell.getChildren().size() > 2) cell.getChildren().remove(2);
                 int fr = r, fc = c;
                 cell.setOnMouseEntered(e -> {
                     if (model.board[fr][fc] == GameModel.CellState.EMPTY && !model.gameOver) {
                         bg.setFill(Paint.valueOf(C_WATER_H));
-                        addGlow(cell, Color.web("#00d4ff"), 12);
+                        addGlow(cell, Color.web("#60b8e0"), 14);
                     }
                 });
                 cell.setOnMouseExited(e -> {
@@ -611,41 +747,38 @@ class GameUI {
             }
         }
         logArea.clear();
-        setStatus("New game started — click a tile to begin your attack!", "#00c8e0");
+        setStatus(
+                "⚔  A new campaign begins — The Battleship War is upon us. Select a coordinate!",
+                BROWN_MID
+        );
         updateStats();
     }
 
+    // ── Victory ──────────────────────────────────────────────
     void showVictory() {
         for (int r = 0; r < GameModel.SIZE; r++)
             for (int c = 0; c < GameModel.SIZE; c++)
                 if (model.board[r][c] == GameModel.CellState.SUNK) {
                     StackPane cell = cells[r][c];
                     Timeline tl = new Timeline(
-                            new KeyFrame(Duration.ZERO,        new KeyValue(cell.opacityProperty(), 1.0)),
-                            new KeyFrame(Duration.millis(300), new KeyValue(cell.opacityProperty(), 0.4)),
-                            new KeyFrame(Duration.millis(600), new KeyValue(cell.opacityProperty(), 1.0))
+                            new KeyFrame(Duration.ZERO,
+                                    new KeyValue(cell.opacityProperty(), 1.0)),
+                            new KeyFrame(Duration.millis(350),
+                                    new KeyValue(cell.opacityProperty(), 0.35)),
+                            new KeyFrame(Duration.millis(700),
+                                    new KeyValue(cell.opacityProperty(), 1.0))
                     );
-                    tl.setCycleCount(3); tl.play();
+                    tl.setCycleCount(4);
+                    tl.play();
                 }
 
-        setStatus("VICTORY!  All ships destroyed in " + model.attempts
-                + " shots!  |  Accuracy: " + String.format("%.0f%%", model.accuracy()), "#ffc832");
-        appendLog("VICTORY — " + model.attempts + " shots, "
+        setStatus(
+                "⚓  VICTORY!  All vessels destroyed in " + model.attempts
+                        + " shots!   Accuracy: " + String.format("%.0f%%", model.accuracy())
+                        + "   —   The Battleship War has been won!",
+                CRIMSON
+        );
+        appendLog("VICTORY ⚓  " + model.attempts + " shots  |  "
                 + String.format("%.0f%%", model.accuracy()) + " accuracy");
-
-        PauseTransition pause = new PauseTransition(Duration.millis(600));
-        pause.setOnFinished(e -> {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Victory!");
-            alert.setHeaderText("Fleet Destroyed!");
-            alert.setContentText(
-                    "You sunk all 5 ships in " + model.attempts + " shots!\n" +
-                            "Hit accuracy: " + String.format("%.1f%%", model.accuracy()) + "\n\n" +
-                            "Click 'New Game' to play again."
-            );
-            alert.initOwner(stage);
-            alert.showAndWait();
-        });
-        pause.play();
     }
 }
