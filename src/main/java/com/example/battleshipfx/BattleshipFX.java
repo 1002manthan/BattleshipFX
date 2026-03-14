@@ -6,6 +6,7 @@ import javafx.geometry.*;
 import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.scene.effect.*;
+import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.paint.*;
 import javafx.scene.shape.*;
@@ -32,23 +33,26 @@ public class BattleshipFX extends Application {
         stage.setResizable(true);
         stage.setMinWidth(1000);
         stage.setMinHeight(1000);
+        Image appIcon = new Image(
+                Objects.requireNonNull(
+                        getClass().getResourceAsStream("/assets/battleship_icon.png")
+                )
+        );
+        stage.getIcons().add(appIcon);
         stage.show();
     }
 
     // ═══════════════════════════════════════════════════════
-    //  "THE BATTLESHIP WAR"
-    //  Theme: aged parchment canvas (#d4b896) + deep sea
-    //  teal cells (#1b4f6a) — exactly as the screenshot.
-    //  Labels in dark brown, serif font throughout.
+    //  "THE BATTLESHIP WAR" Theme Data:
     // ═══════════════════════════════════════════════════════
-    static final String PARCHMENT      = "#d6bc96";
+    static final String PARCHMENT = "#d6bc96";
     static final String PARCHMENT_DARK = "#c4a878";
-    static final String PARCHMENT_MID  = "#cbb08a";
-    static final String BROWN_DARK     = "#3a2408";
-    static final String BROWN_MID      = "#6a4018";
-    static final String GOLD           = "#8a5c10";
-    static final String GOLD_BRIGHT    = "#b07820";
-    static final String CRIMSON        = "#8a1c0c";
+    static final String PARCHMENT_MID = "#cbb08a";
+    static final String BROWN_DARK = "#3a2408";
+    static final String BROWN_MID = "#6a4018";
+    static final String GOLD = "#8a5c10";
+    static final String GOLD_BRIGHT = "#b07820";
+    static final String CRIMSON = "#8a1c0c";
 
     static final String CSS =
             // Whole window is parchment
@@ -95,12 +99,12 @@ public class BattleshipFX extends Application {
                     // How-to-play text
                     ".how-title{-fx-font-size:10px;-fx-font-weight:bold;" +
                     "  -fx-text-fill:" + GOLD + ";-fx-font-family:'Georgia',serif;}" +
-                    ".how-text{-fx-font-size:11px;-fx-text-fill:" + BROWN_DARK + ";" +
+                    ".how-text{-fx-font-size:12px;-fx-text-fill:" + BROWN_DARK + ";" +
                     "  -fx-font-family:'Georgia',serif;}";
 }
 
 // ═══════════════════════════════════════════════════════════
-//  GAME MODEL
+//  GAME MODEL | BUSINESS LOGIC
 // ═══════════════════════════════════════════════════════════
 class GameModel {
     static final int SIZE = 10;
@@ -117,19 +121,23 @@ class GameModel {
             this.size = size;
         }
 
-        boolean isSunk() { return hits >= size; }
+        boolean isSunk() {
+            return hits >= size;
+        }
     }
 
     CellState[][] board = new CellState[SIZE][SIZE];
-    Ship[][] shipAt     = new Ship[SIZE][SIZE];
-    List<Ship> ships    = new ArrayList<>();
+    Ship[][] shipAt = new Ship[SIZE][SIZE];
+    List<Ship> ships = new ArrayList<>();
     int attempts, hitCount, totalShipCells;
     boolean gameOver;
 
-    GameModel() { reset(); }
+    GameModel() {
+        reset();
+    }
 
     void reset() {
-        board  = new CellState[SIZE][SIZE];
+        board = new CellState[SIZE][SIZE];
         shipAt = new Ship[SIZE][SIZE];
         ships.clear();
         attempts = hitCount = totalShipCells = 0;
@@ -140,13 +148,14 @@ class GameModel {
 
     void placeFleet() {
         String[][] fleet = {
-                {"Flagship",   "5"}, {"Man-of-War", "4"},
-                {"Brigantine", "3"}, {"Corsair",    "3"}, {"Sloop", "2"}
+                {"Flagship", "5"}, {"Man-of-War", "4"},
+                {"Brigantine", "3"}, {"Corsair", "3"}, {"Sloop", "2"}
         };
         Random rng = new Random();
         for (String[] f : fleet) {
             Ship ship = new Ship(f[0], Integer.parseInt(f[1]));
-            int tries = 0; boolean placed = false;
+            int tries = 0;
+            boolean placed = false;
             while (!placed && tries++ < 2000) {
                 boolean h = rng.nextBoolean();
                 int r = rng.nextInt(SIZE - (h ? 0 : ship.size - 1));
@@ -227,32 +236,34 @@ class GameModel {
 // ═══════════════════════════════════════════════════════════
 class GameUI {
 
-    static final int    SIDEBAR_W = 350;
-    static final double TEXT_W    = SIDEBAR_W;
+    static final int SIDEBAR_W = 350;
+    static final double TEXT_W = SIDEBAR_W - 60;
 
     // shorthand palette refs
-    static final String PARCHMENT      = "#d6bc96";
+    static final String PARCHMENT = "#d6bc96";
     static final String PARCHMENT_DARK = "#c4a878";
-    static final String PARCHMENT_MID  = "#cbb08a";
-    static final String BROWN_DARK     = "#3a2408";
-    static final String BROWN_MID      = "#6a4018";
-    static final String GOLD           = "#8a5c10";
-    static final String GOLD_BRIGHT    = "#b07820";
-    static final String CRIMSON        = "#8a1c0c";
+    static final String PARCHMENT_MID = "#cbb08a";
+    static final String BROWN_DARK = "#3a2408";
+    static final String BROWN_MID = "#6a4018";
+    static final String GOLD = "#8a5c10";
+    static final String GOLD_BRIGHT = "#b07820";
+    static final String CRIMSON = "#8a1c0c";
+    static final String RED = "#f7220a";
+    static final String DARK_RED = "#b02010";
 
     // ── Cell colours — matching screenshot exactly ───────────
     // Normal sea tile — deep teal as in the screenshot
-    static final String C_WATER   = "#1b4f6a";
+    static final String C_WATER = "#1b4f6a";
     // Hover — slightly brighter teal
     static final String C_WATER_H = "#256690";
     // Hit — warm crimson / blood-red
-    static final String C_HIT     = "#9e2010";
+    static final String C_HIT = "#9e2010";
     // Sunk — very dark burgundy
-    static final String C_SUNK    = "#5c0e0e";
+    static final String C_SUNK = "#5c0e0e";
     // Miss — muted slate-teal (darker than empty)
-    static final String C_MISS    = "#163c50";
+    static final String C_MISS = "#163c50";
     // Grid gap colour = parchment (comes from background showing through)
-    static final String C_HEADER  = "#3a2408";   // dark brown labels
+    static final String C_HEADER = "#3a2408";   // dark brown labels
 
     GameModel model;
     Stage stage;
@@ -382,17 +393,26 @@ class GameUI {
         cell.setCursor(javafx.scene.Cursor.HAND);
 
         cell.setOnMouseEntered(e -> {
-            if (model.board[r][c] == GameModel.CellState.EMPTY && !model.gameOver) {
+            if (model.board[r][c] == GameModel.CellState.EMPTY || model.board[r][c] == GameModel.CellState.SHIP) {
                 bg.setFill(Paint.valueOf(C_WATER_H));
+                addGlow(cell, Color.web("#60b8e0"), 14);
+            }
+            if (model.board[r][c] == GameModel.CellState.HIT) {
+                bg.setFill(Paint.valueOf(RED));
                 addGlow(cell, Color.web("#60b8e0"), 14);
             }
         });
         cell.setOnMouseExited(e -> {
-            if (model.board[r][c] == GameModel.CellState.EMPTY) {
+            if (model.board[r][c] == GameModel.CellState.EMPTY || model.board[r][c] == GameModel.CellState.SHIP) {
                 bg.setFill(Paint.valueOf(C_WATER));
                 cell.setEffect(null);
             }
+            if (model.board[r][c] == GameModel.CellState.HIT) {
+                bg.setFill(Paint.valueOf(DARK_RED));
+                cell.setEffect(null);
+            }
         });
+
         cell.setOnMouseClicked(e -> handleFire(r, c));
         return cell;
     }
@@ -416,8 +436,9 @@ class GameUI {
             appendLog("[STRIKE]  " + col + row);
         } else if (result.startsWith("SUNK:")) {
             String[] parts = result.split(":");
-            String name = parts[1]; int sz = Integer.parseInt(parts[2]);
-            setStatus("☠  " + name + " (" + sz + " guns) sent to the depths at " + col + row + "!", "#b02010");
+            String name = parts[1];
+            int sz = Integer.parseInt(parts[2]);
+            setStatus("☠  " + name + " (" + sz + " guns) sent to the depths at " + col + row + "!", DARK_RED);
             appendLog("[SUNK]    " + name + "  ☠  " + col + row);
             shakeSunk(name);
         } else {
@@ -432,8 +453,8 @@ class GameUI {
 
     void refreshCell(int r, int c, String result) {
         StackPane cell = cells[r][c];
-        Rectangle bg   = (Rectangle) cell.getChildren().get(0);
-        Label icon     = (Label)     cell.getChildren().get(1);
+        Rectangle bg = (Rectangle) cell.getChildren().get(0);
+        Label icon = (Label) cell.getChildren().get(1);
         if (cell.getChildren().size() > 2) cell.getChildren().remove(2);
         cell.setEffect(null);
 
@@ -481,8 +502,8 @@ class GameUI {
 
     void refreshSunkCell(int r, int c) {
         StackPane cell = cells[r][c];
-        Rectangle bg   = (Rectangle) cell.getChildren().get(0);
-        Label icon     = (Label)     cell.getChildren().get(1);
+        Rectangle bg = (Rectangle) cell.getChildren().get(0);
+        Label icon = (Label) cell.getChildren().get(1);
         if (cell.getChildren().size() > 2) cell.getChildren().remove(2);
         bg.setFill(Paint.valueOf(C_SUNK));
         icon.setText("☠");
@@ -521,11 +542,11 @@ class GameUI {
         logArea.setMaxWidth(Double.MAX_VALUE);
         logArea.setWrapText(true);
         logArea.setStyle(
-                "-fx-control-inner-background:#e8d8b8;" +
-                        "-fx-text-fill:" + BROWN_DARK + ";" +
+                "-fx-control-inner-background:#1a0f0f;" +
+                        "-fx-text-fill:#6db385;" +
                         "-fx-font-family:'Courier New';" +
-                        "-fx-font-size:11px;" +
-                        "-fx-border-color:" + PARCHMENT_DARK + ";-fx-border-width:1.5;"
+                        "-fx-font-size:13px;" +
+                        "-fx-border-color:" + BROWN_DARK + ";-fx-border-width:1;"
         );
         VBox.setVgrow(logArea, Priority.ALWAYS);
         side.getChildren().add(logArea);
@@ -544,25 +565,28 @@ class GameUI {
     // ── Stats Card ───────────────────────────────────────────
     GridPane buildStatsCard() {
         attemptsVal = statValue("0");
-        hitsVal     = statValue("0");
-        shipsVal    = statValue(String.valueOf(model.shipsRemaining()));
+        hitsVal = statValue("0");
+        shipsVal = statValue(String.valueOf(model.shipsRemaining()));
         accuracyVal = statValue("0%");
 
         GridPane g = new GridPane();
         g.getStyleClass().add("card");
-        g.setHgap(0); g.setVgap(8);
+        g.setHgap(0);
+        g.setVgap(8);
         g.setMaxWidth(Double.MAX_VALUE);
 
         ColumnConstraints col0 = new ColumnConstraints();
-        col0.setPercentWidth(50); col0.setHalignment(HPos.LEFT);
+        col0.setPercentWidth(50);
+        col0.setHalignment(HPos.LEFT);
         ColumnConstraints col1 = new ColumnConstraints();
-        col1.setPercentWidth(50); col1.setHalignment(HPos.LEFT);
+        col1.setPercentWidth(50);
+        col1.setHalignment(HPos.LEFT);
         g.getColumnConstraints().addAll(col0, col1);
 
-        g.add(statBlock("Cannons Fired", attemptsVal),  0, 0);
-        g.add(statBlock("Strikes",        hitsVal),      1, 0);
-        g.add(statBlock("Vessels Afloat", shipsVal),     0, 1);
-        g.add(statBlock("Accuracy",       accuracyVal),  1, 1);
+        g.add(statBlock("Cannons Fired", attemptsVal), 0, 0);
+        g.add(statBlock("Strikes", hitsVal), 1, 0);
+        g.add(statBlock("Vessels Afloat", shipsVal), 0, 1);
+        g.add(statBlock("Accuracy", accuracyVal), 1, 1);
         return g;
     }
 
@@ -581,7 +605,7 @@ class GameUI {
         return l;
     }
 
-    // ── Tactical Orders Card ─────────────────────────────────
+    // ── Tactical Orders Card ────────────────────────────────
     VBox buildHowToPlayCard() {
         VBox box = new VBox(0);
         box.getStyleClass().add("card");
@@ -607,12 +631,10 @@ class GameUI {
             title.getStyleClass().add("how-title");
             title.setMaxWidth(Double.MAX_VALUE);
 
-            Label desc = new Label(steps[i][1]);
+            Text desc = new Text(steps[i][1]);
             desc.getStyleClass().add("how-text");
-            desc.setWrapText(true);
-            desc.setMaxWidth(TEXT_W);
-            desc.setPrefWidth(TEXT_W);
-            desc.setTextOverrun(javafx.scene.control.OverrunStyle.CLIP);
+            desc.setWrappingWidth(TEXT_W);
+
 
             VBox entry = new VBox(3, title, desc);
             entry.setPadding(new Insets(6, 0, 6, 0));
@@ -633,17 +655,18 @@ class GameUI {
         box.getStyleClass().add("card");
         box.setMaxWidth(Double.MAX_VALUE);
         box.getChildren().addAll(
-                legendRow(C_WATER,   "Uncharted sea — no contact"),
-                legendRow(C_HIT,     "⚔  Strike confirmed on vessel"),
-                legendRow(C_SUNK,    "☠  Vessel sent to the depths"),
-                legendRow(C_MISS,    "○  Miss — R/C intel shown")
+                legendRow(C_WATER, "Uncharted sea — no contact"),
+                legendRow(C_HIT, "⚔  Strike confirmed on vessel"),
+                legendRow(C_SUNK, "☠  Vessel sent to the depths"),
+                legendRow(C_MISS, "○  Miss — R/C intel shown")
         );
         return box;
     }
 
     HBox legendRow(String color, String text) {
         Rectangle swatch = new Rectangle(14, 14);
-        swatch.setArcWidth(4); swatch.setArcHeight(4);
+        swatch.setArcWidth(4);
+        swatch.setArcHeight(4);
         swatch.setFill(Paint.valueOf(color));
         swatch.setStroke(Color.web(PARCHMENT_DARK));
         swatch.setStrokeWidth(1);
@@ -677,9 +700,12 @@ class GameUI {
 
     void pulseEffect(Node node) {
         ScaleTransition st = new ScaleTransition(Duration.millis(140), node);
-        st.setFromX(1.0); st.setFromY(1.0);
-        st.setToX(1.16);  st.setToY(1.16);
-        st.setAutoReverse(true); st.setCycleCount(2);
+        st.setFromX(1.0);
+        st.setFromY(1.0);
+        st.setToX(1.16);
+        st.setToY(1.16);
+        st.setAutoReverse(true);
+        st.setCycleCount(2);
         st.play();
     }
 
@@ -699,8 +725,10 @@ class GameUI {
     void flashStatus(String msg, String colorHex) {
         setStatus(msg, colorHex);
         FadeTransition ft = new FadeTransition(Duration.millis(700), statusLabel);
-        ft.setFromValue(1.0); ft.setToValue(0.3);
-        ft.setAutoReverse(true); ft.setCycleCount(2);
+        ft.setFromValue(1.0);
+        ft.setToValue(0.3);
+        ft.setAutoReverse(true);
+        ft.setCycleCount(2);
         ft.play();
     }
 
@@ -709,7 +737,9 @@ class GameUI {
         statusLabel.setTextFill(Color.web(colorHex));
     }
 
-    void appendLog(String entry) { logArea.appendText(entry + "\n"); }
+    void appendLog(String entry) {
+        logArea.appendText(entry + "\n");
+    }
 
     void updateStats() {
         attemptsVal.setText(String.valueOf(model.attempts));
@@ -723,8 +753,8 @@ class GameUI {
         for (int r = 0; r < GameModel.SIZE; r++) {
             for (int c = 0; c < GameModel.SIZE; c++) {
                 StackPane cell = cells[r][c];
-                Rectangle bg   = (Rectangle) cell.getChildren().get(0);
-                Label icon     = (Label)     cell.getChildren().get(1);
+                Rectangle bg = (Rectangle) cell.getChildren().get(0);
+                Label icon = (Label) cell.getChildren().get(1);
                 bg.setFill(Paint.valueOf(C_WATER));
                 bg.setStroke(Color.TRANSPARENT);
                 icon.setText("");
