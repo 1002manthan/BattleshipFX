@@ -162,7 +162,7 @@ BattleshipFX
 
 ---
 
-## ▶️ How to Run
+## ▶️ Run or Download .exe
 
 ### 1. Clone the repository
 
