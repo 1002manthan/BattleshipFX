@@ -157,12 +157,12 @@ class GameModel {
             int tries = 0;
             boolean placed = false;
             while (!placed && tries++ < 2000) {
-                boolean h = rng.nextBoolean();
-                int r = rng.nextInt(SIZE - (h ? 0 : ship.size - 1));
-                int c = rng.nextInt(SIZE - (h ? ship.size - 1 : 0));
-                if (canPlace(r, c, ship.size, h)) {
+                boolean isHorizontal = rng.nextBoolean();
+                int row = rng.nextInt(SIZE - (isHorizontal ? 0 : ship.size - 1));
+                int col = rng.nextInt(SIZE - (isHorizontal ? ship.size - 1 : 0));
+                if (canPlace(row, col, ship.size, isHorizontal)) {
                     for (int i = 0; i < ship.size; i++) {
-                        int rr = h ? r : r + i, cc = h ? c + i : c;
+                        int rr = isHorizontal ? row : row + i, cc = isHorizontal ? col + i : col;
                         board[rr][cc] = CellState.SHIP;
                         shipAt[rr][cc] = ship;
                         ship.cells.add(new int[]{rr, cc});
@@ -175,9 +175,9 @@ class GameModel {
         }
     }
 
-    boolean canPlace(int r, int c, int sz, boolean h) {
-        for (int i = 0; i < sz; i++) {
-            int rr = h ? r : r + i, cc = h ? c + i : c;
+    boolean canPlace(int row, int col, int size, boolean isHorizontal) {
+        for (int i = 0; i < size; i++) {
+            int rr = isHorizontal ? row : row + i, cc = isHorizontal ? col + i : col;
             for (int dr = -1; dr <= 1; dr++)
                 for (int dc = -1; dc <= 1; dc++) {
                     int nr = rr + dr, nc = cc + dc;
@@ -188,12 +188,12 @@ class GameModel {
         return true;
     }
 
-    String fire(int r, int c) {
-        CellState st = board[r][c];
+    String fire(int row, int col) {
+        CellState st = board[row][col];
         if (st == CellState.HIT || st == CellState.MISS || st == CellState.SUNK) return "ALREADY";
         attempts++;
         if (st == CellState.SHIP) {
-            Ship ship = shipAt[r][c];
+            Ship ship = shipAt[row][col];
             ship.hits++;
             hitCount++;
             if (ship.isSunk()) {
@@ -201,10 +201,10 @@ class GameModel {
                 if (hitCount >= totalShipCells) gameOver = true;
                 return "SUNK:" + ship.name + ":" + ship.size;
             }
-            board[r][c] = CellState.HIT;
+            board[row][col] = CellState.HIT;
             return "HIT";
         }
-        board[r][c] = CellState.MISS;
+        board[row][col] = CellState.MISS;
         return "MISS";
     }
 
